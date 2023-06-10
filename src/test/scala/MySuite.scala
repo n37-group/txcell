@@ -1,13 +1,18 @@
-import com.blaasoft.tcell.Cell
-import com.blaasoft.tcell.CellTransaction
-import com.blaasoft.tcell.ImplicitCellTransaction
+import com.blaasoft.tcell.{+, Cell, CellTransaction, CellTransactionManager, ImplicitCellTransaction}
+
 import scala.collection.mutable.ListBuffer
-import com.blaasoft.tcell.+
 // For more information on writing tests, see
 // https://scalameta.org/munit/docs/getting-started.html
 
 
 class MySuite extends munit.FunSuite {
+
+
+  given CellTransaction = {
+    val transaction = new ImplicitCellTransaction
+    transaction
+  }
+
   test("Simple init of a var") {
     val a = Cell.Var(33)
     assertEquals(a(), 33)
@@ -28,7 +33,7 @@ class MySuite extends munit.FunSuite {
     assertEquals(a(), 10)
     assertEquals(b(), 11)
 
-    CellTransaction { 
+    CellTransactionManager {
       a() = 20
     }
     
@@ -82,7 +87,7 @@ class MySuite extends munit.FunSuite {
     middle.observe(value => signal += value)
 
     // Translate 5 on the right
-    CellTransaction {
+    CellTransactionManager {
       x() = 5
       y() = 15
     }
@@ -140,15 +145,4 @@ class MySuite extends munit.FunSuite {
   }
 
 
-  test("gogogo") {
-    val a = Cell.DebouncedVar(0.0)
-
-    a.observe(newValue => println(newValue))
-
-    for i <- 0 until 50
-    do
-      a() = i.doubleValue()
-      Thread.sleep(100)
-
-  }
 }

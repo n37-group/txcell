@@ -1,6 +1,5 @@
-import com.blaasoft.tcell.Cell
+import com.blaasoft.tcell.{Cell, CellTransaction, CellTransactionManager, ImplicitCellTransaction}
 import com.blaasoft.tcell.Cell.AbstractCell
-import com.blaasoft.tcell.CellTransaction
 
 import scala.collection.mutable.ListBuffer
 
@@ -18,6 +17,12 @@ def consolidated(accts: List[BankAccount]) =
     Cell {accts.map(_.balance()).sum} 
 
 class BankAccountTest extends munit.FunSuite {
+    given CellTransaction = {
+        val transaction = new ImplicitCellTransaction
+        transaction
+    }
+
+
     test("Ban account test") {
         val a = BankAccount()
         val b = BankAccount()
@@ -33,7 +38,7 @@ class BankAccountTest extends munit.FunSuite {
         a.deposit(10)       // Total is 110
         b.deposit(40)       // Total is 150
 
-        CellTransaction {
+        CellTransactionManager {
             a.deposit(20)   // Total is still 150
             a.deposit(30)   // Total is still 150
         }

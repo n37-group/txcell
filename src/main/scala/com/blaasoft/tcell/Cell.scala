@@ -43,7 +43,7 @@ object Cell:
         currentValue = newValue
         currentValueHasChanged = true
 
-    override def toString(): String = currentValue.toString()
+    override def toString: String = currentValue.toString
 
   end AbstractCell
 
@@ -59,42 +59,19 @@ object Cell:
     protected var eval = initialExpr
     computeValue()
 
-    def update(newExpr: Observed[T])(using transaction: CellTransaction) =
+    def update(newExpr: Observed[T])(using transaction: CellTransaction): Unit =
       transaction.addCellToTransaction(this)
       eval = newExpr
       computeValue()
 
       transaction match
-        case imp if imp == ImplicitCellTransaction => ImplicitCellTransaction.propagate(this)
+        case imp : ImplicitCellTransaction =>
+          imp.propagate(this)
         case _ =>
+          println("Do nothing")
 
   end Var
 
-  class DebouncedVar[T](initialExpr: Observed[T]) extends AbstractCell[T]:
-    protected var eval = initialExpr
-    computeValue()
-
-    private var timerIsStarted = false
-
-    def update(newExpr: Observed[T])(using transaction: CellTransaction): Unit =
-
-      eval = newExpr
-
-      if (!timerIsStarted) {
-        timerIsStarted = true
-        new Timer().schedule(new TimerTask {
-
-          override def run(): Unit = {
-            timerIsStarted = false
-            computeValue()
-            ImplicitCellTransaction.propagate(DebouncedVar.this)
-          }
-
-        }, 1000)
-      }
-
-
-  end DebouncedVar
 
   given noObserver: AbstractCell[?] = new AbstractCell[Nothing]:
     override def eval = ???

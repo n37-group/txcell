@@ -6,7 +6,6 @@ trait CellTransaction:
   def addCellToTransaction(cell: Cell[?]): Unit
 
 object CellTransaction:
-  def apply(body: CellTransaction ?=> Unit) = DefaultCellTransaction(body)
 
   def propagate(initCells: List[Cell[?]]): Unit = {
     val paths = Node.nodesByDepth(initCells)
@@ -20,8 +19,6 @@ object CellTransaction:
       .foreach(x => x.notifyObservers())
   }
 
-  given noTransaction: CellTransaction = ImplicitCellTransaction
-
 end CellTransaction
 
 
@@ -30,19 +27,22 @@ class DefaultCellTransaction(body: CellTransaction ?=> Unit) extends CellTransac
 
   def addCellToTransaction(cell: Cell[?]): Unit = modifiedCells += cell
 
+  def doPropagate(): Unit = propagate(modifiedCells.toList)
+
   implicit val T:CellTransaction = this
 
   body
 
-  propagate(modifiedCells.toList)
+  def maybeClose(): Unit =  {}
+
+  //propagate(modifiedCells.toList)
 
 end DefaultCellTransaction
 
-object ImplicitCellTransaction extends CellTransaction:
+class ImplicitCellTransaction extends CellTransaction:
   def addCellToTransaction(cell: Cell[?]): Unit = {}
 
-  def propagate(from: Cell[?]): Unit =
-    CellTransaction.propagate(List(from))
+  def propagate(from: Cell[?]): Unit = CellTransaction.propagate(List(from))
 
 end ImplicitCellTransaction
 
