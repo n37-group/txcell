@@ -5,6 +5,8 @@ import com.blaasoft.tcell.CellTransaction.propagate
 trait CellTransaction:
   def addCellToTransaction(cell: Cell[?]): Unit
 
+  def doPropagate(): Unit
+
 object CellTransaction:
 
   def propagate(initCells: List[Cell[?]]): Unit = {
@@ -35,14 +37,14 @@ class DefaultCellTransaction(body: CellTransaction ?=> Unit) extends CellTransac
 
   def maybeClose(): Unit =  {}
 
-  //propagate(modifiedCells.toList)
-
 end DefaultCellTransaction
 
 class ImplicitCellTransaction extends CellTransaction:
   def addCellToTransaction(cell: Cell[?]): Unit = {}
 
   def propagate(from: Cell[?]): Unit = CellTransaction.propagate(List(from))
+
+  def doPropagate(): Unit = {} // might be better
 
 end ImplicitCellTransaction
 

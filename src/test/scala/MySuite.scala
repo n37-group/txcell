@@ -1,9 +1,7 @@
-import com.blaasoft.tcell.{+, Cell, CellTransaction, CellTransactionManager, ImplicitCellTransaction}
+import com.blaasoft.tcell.managers.CellTransactionManager
+import com.blaasoft.tcell.{+, Cell, CellTransaction, ImplicitCellTransaction}
 
 import scala.collection.mutable.ListBuffer
-// For more information on writing tests, see
-// https://scalameta.org/munit/docs/getting-started.html
-
 
 class MySuite extends munit.FunSuite {
 
@@ -33,7 +31,7 @@ class MySuite extends munit.FunSuite {
     assertEquals(a(), 10)
     assertEquals(b(), 11)
 
-    CellTransactionManager {
+    CellTransactionManager.Simple {
       a() = 20
     }
     
@@ -87,7 +85,7 @@ class MySuite extends munit.FunSuite {
     middle.observe(value => signal += value)
 
     // Translate 5 on the right
-    CellTransactionManager {
+    CellTransactionManager.Simple {
       x() = 5
       y() = 15
     }

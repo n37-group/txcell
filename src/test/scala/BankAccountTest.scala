@@ -1,5 +1,6 @@
-import com.blaasoft.tcell.{Cell, CellTransaction, CellTransactionManager, ImplicitCellTransaction}
+import com.blaasoft.tcell.{Cell, CellTransaction, ImplicitCellTransaction}
 import com.blaasoft.tcell.Cell.AbstractCell
+import com.blaasoft.tcell.managers.CellTransactionManager
 
 import scala.collection.mutable.ListBuffer
 
@@ -38,7 +39,7 @@ class BankAccountTest extends munit.FunSuite {
         a.deposit(10)       // Total is 110
         b.deposit(40)       // Total is 150
 
-        CellTransactionManager {
+        CellTransactionManager.Simple {
             a.deposit(20)   // Total is still 150
             a.deposit(30)   // Total is still 150
         }
