@@ -18,10 +18,8 @@ object CellTransactionManager:
     private var now: Long = 0
     private val tasks: mutable.SortedMap[Long, ListBuffer[CellTransaction]] = mutable.SortedMap[Long, ListBuffer[CellTransaction]]()
 
-
     private val transaction = DefaultCellTransaction(body)
     addTask(now, transaction)
-    //transaction.doPropagate()
 
     def setTime(newTime: Long): Unit =
       now = newTime
