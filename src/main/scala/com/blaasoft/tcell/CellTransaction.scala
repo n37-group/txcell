@@ -9,8 +9,13 @@ trait CellTransaction:
 
 object CellTransaction:
 
+  given CellTransaction = {
+    val transaction = new ImplicitCellTransaction
+    transaction
+  }
+
   def propagate(initCells: List[Cell[?]]): Unit = {
-    val paths = Node.nodesByDepth(initCells)
+    val paths = Vertex.nodesByDepth(initCells)
 
     paths.map(_._2).foreach(listOfNodes =>
       listOfNodes.map(x => x.asInstanceOf[Cell.AbstractCell[_]]).foreach(_.computeValue()))
@@ -44,7 +49,7 @@ class ImplicitCellTransaction extends CellTransaction:
 
   def propagate(from: Cell[?]): Unit = CellTransaction.propagate(List(from))
 
-  def doPropagate(): Unit = {} // might be better
+  def doPropagate(): Unit = {}
 
 end ImplicitCellTransaction
 

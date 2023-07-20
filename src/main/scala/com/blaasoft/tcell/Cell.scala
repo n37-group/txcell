@@ -15,7 +15,7 @@ trait ExternalObserver[T] {
     currentValueHasChanged = false
 }
 
-trait Cell[+T] extends Node:
+trait Cell[+T] extends Vertex:
   def apply(): Cell.Observed[T]
 
   def observe(f: T => Unit): Unit
@@ -32,7 +32,7 @@ object Cell:
 
   abstract class AbstractCell[T] extends Cell[T] with ExternalObserver[T]:
     final def apply(): Observed[T] =
-      Node.connect(this, caller)
+      Vertex.connect(this, caller)
       currentValue
 
     protected def eval: Observed[T]

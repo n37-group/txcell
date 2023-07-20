@@ -6,11 +6,6 @@ import scala.collection.mutable.ListBuffer
 class MySuite extends munit.FunSuite {
 
 
-  given CellTransaction = {
-    val transaction = new ImplicitCellTransaction
-    transaction
-  }
-
   test("Simple init of a var") {
     val a = Cell.Var(33)
     assertEquals(a(), 33)
@@ -127,7 +122,7 @@ class MySuite extends munit.FunSuite {
     assertEquals(signal.toList, List(8, 9))
   }
 
-  test("Mofifings a list of cells") {
+  test("Modifying a list of cells") {
     val a = Cell.Var("One")
     val b = Cell.Var("Two")
     val c = Cell.Var("Three")

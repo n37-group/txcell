@@ -9,6 +9,8 @@ trait CellTransactionManager
 
 object CellTransactionManager:
 
+  def tx(body: CellTransaction ?=> Unit) = CellTransactionManager.Simple(body)
+
   class Simple(body: CellTransaction ?=> Unit) extends CellTransactionManager:
     val transaction = DefaultCellTransaction(body)
     transaction.doPropagate()
@@ -45,3 +47,4 @@ object CellTransactionManager:
   end TestCellTransactionManager
 
 end CellTransactionManager
+
